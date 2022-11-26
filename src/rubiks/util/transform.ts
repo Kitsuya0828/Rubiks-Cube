@@ -1,6 +1,10 @@
-import {Matrix4, Object3D, Vector3} from "three";
+import { Matrix4, Object3D, Vector3 } from "three";
 
-export const rotateAroundWorldAxis = (object: Object3D, axis: Vector3, radians: number) => {
+export const rotateAroundWorldAxis = (
+    object: Object3D,
+    axis: Vector3,
+    radians: number
+) => {
     const mat = new Matrix4();
     mat.makeRotationAxis(axis.normalize(), radians);
 
@@ -11,12 +15,16 @@ export const rotateAroundWorldAxis = (object: Object3D, axis: Vector3, radians: 
     object.rotation.setFromRotationMatrix(object.matrix);
 };
 
-export const ndcToScreen = (ndc: {x: number; y: number}, winW: number, winH: number) => {
+export const ndcToScreen = (
+    ndc: { x: number; y: number },
+    winW: number,
+    winH: number
+) => {
     const halfW = winW * 0.5;
     const halfH = winH * 0.5;
 
-    const x = (ndc.x * halfW) + halfW;
-    const y = halfH - (ndc.y * halfH);
+    const x = ndc.x * halfW + halfW;
+    const y = halfH - ndc.y * halfH;
 
-    return {x, y};
+    return { x, y };
 };

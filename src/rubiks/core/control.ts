@@ -1,34 +1,15 @@
-import {Camera, Matrix4, PerspectiveCamera, Raycaster, Scene, Vector2, Vector3, WebGLRenderer} from "three";
-import {Cube} from "./cube";
-import {rotateAroundWorldAxis, ndcToScreen} from "../util/transform";
-import {SquareMesh} from "./square";
-import {setFinish} from "./statusbar";
-
-let spanEle: HTMLSpanElement;
-
-const testSquareScreenPosition = (cube: Cube, square: SquareMesh, camera: Camera) => {
-    if (!spanEle) {
-        spanEle = document.createElement("span");
-        spanEle.style.position = "absolute";
-        spanEle.style.color = "pink";
-        document.body.appendChild(spanEle);
-    }
-
-    const pos = new Vector3();
-    // square.updateMatrixWorld();
-    const matrix = new Matrix4().multiply(square.matrixWorld).multiply(cube.matrix);
-
-    pos.applyMatrix4(matrix);
-    pos.project(camera);
-
-    const {x, y} = ndcToScreen(pos, window.innerWidth, window.innerHeight);
-
-    spanEle.style.top = `${y}px`;
-    spanEle.style.left = `${x}px`;
-    console.log(x, y);
-
-    spanEle.innerText = `1`;
-};
+import {
+    PerspectiveCamera,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+} from "three";
+import { Cube } from "./cube";
+import { rotateAroundWorldAxis } from "../util/transform";
+import { SquareMesh } from "./square";
+import { setFinish } from "./statusbar";
 
 abstract class Control {
     protected renderer: WebGLRenderer;
@@ -43,7 +24,12 @@ abstract class Control {
         return this.renderer.domElement;
     }
     private raycaster = new Raycaster();
-    public constructor(camera: PerspectiveCamera, scene: Scene, renderer: WebGLRenderer, cube: Cube) {
+    public constructor(
+        camera: PerspectiveCamera,
+        scene: Scene,
+        renderer: WebGLRenderer,
+        cube: Cube
+    ) {
         this.cube = cube;
         this.renderer = renderer;
         this.scene = scene;
@@ -54,23 +40,27 @@ abstract class Control {
         const x = (offsetX / this.domElement.clientWidth) * 2 - 1;
         const y = -(offsetY / this.domElement.clientHeight) * 2 + 1;
 
-        this.raycaster.setFromCamera({x, y}, this.camera);
+        this.raycaster.setFromCamera({ x, y }, this.camera);
 
         let intersectSquares: {
             distance: number;
             square: SquareMesh;
         }[] = [];
         for (let i = 0; i < this.cube.squares.length; i++) {
-            const intersects = this.raycaster.intersectObjects([this.cube.squares[i]]);
+            const intersects = this.raycaster.intersectObjects([
+                this.cube.squares[i],
+            ]);
             if (intersects.length > 0) {
                 intersectSquares.push({
                     distance: intersects[0].distance,
-                    square: this.cube.squares[i]
+                    square: this.cube.squares[i],
                 });
             }
         }
 
-        intersectSquares.sort((item1, item2) => item1.distance - item2.distance);
+        intersectSquares.sort(
+            (item1, item2) => item1.distance - item2.distance
+        );
 
         if (intersectSquares.length > 0) {
             return intersectSquares[0];
@@ -84,7 +74,7 @@ abstract class Control {
             return;
         }
         this.start = true;
-        this.startPos = new Vector2()
+        this.startPos = new Vector2();
         const intersect = this.getIntersects(offsetX, offsetY);
 
         this._square = null;
@@ -96,29 +86,48 @@ abstract class Control {
         }
     }
 
-    protected operateDrag(offsetX: number, offsetY: number, movementX: number, movementY: number) {
+    protected operateDrag(
+        offsetX: number,
+        offsetY: number,
+        movementX: number,
+        movementY: number
+    ) {
         if (this.start && this.lastOperateUnfinish === false) {
             if (this._square) {
                 const curMousePos = new Vector2(offsetX, offsetY);
-                this.cube.rotateOnePlane(this.startPos, curMousePos, this._square, this.camera, {w: this.domElement.clientWidth, h: this.domElement.clientHeight});
+                this.cube.rotateOnePlane(
+                    this.startPos,
+                    curMousePos,
+                    this._square,
+                    this.camera,
+                    {
+                        w: this.domElement.clientWidth,
+                        h: this.domElement.clientHeight,
+                    }
+                );
             } else {
                 const dx = movementX;
                 const dy = -movementY;
 
                 const movementLen = Math.sqrt(dx * dx + dy * dy);
-                const cubeSize = this.cube.getCoarseCubeSize(
-                    this.camera, {
+                const cubeSize = this.cube.getCoarseCubeSize(this.camera, {
                     w: this.domElement.clientWidth,
-                    h: this.domElement.clientHeight
+                    h: this.domElement.clientHeight,
                 });
 
-
-                const rotateAngle = Math.PI * movementLen / cubeSize;
+                const rotateAngle = (Math.PI * movementLen) / cubeSize;
 
                 const moveVect = new Vector2(dx, dy);
-                const rotateDir = moveVect.rotateAround(new Vector2(0, 0), Math.PI * 0.5);
+                const rotateDir = moveVect.rotateAround(
+                    new Vector2(0, 0),
+                    Math.PI * 0.5
+                );
 
-                rotateAroundWorldAxis(this.cube, new Vector3(rotateDir.x, rotateDir.y, 0), rotateAngle);
+                rotateAroundWorldAxis(
+                    this.cube,
+                    new Vector3(rotateDir.x, rotateDir.y, 0),
+                    rotateAngle
+                );
             }
             this.renderer.render(this.scene, this.camera);
         }
@@ -138,7 +147,7 @@ abstract class Control {
                         setFinish(this.cube.finish);
                         this.lastOperateUnfinish = false;
                     }
-                }
+                };
                 requestAnimationFrame(animation);
             }
             this.start = false;
@@ -148,7 +157,12 @@ abstract class Control {
 }
 
 export class MouseControl extends Control {
-    constructor(camera: PerspectiveCamera, scene: Scene, renderer: WebGLRenderer, cube: Cube) {
+    constructor(
+        camera: PerspectiveCamera,
+        scene: Scene,
+        renderer: WebGLRenderer,
+        cube: Cube
+    ) {
         super(camera, scene, renderer, cube);
 
         this.mousedownHandle = this.mousedownHandle.bind(this);
@@ -180,7 +194,12 @@ export class MouseControl extends Control {
     public mousemoveHandle(event: MouseEvent) {
         event.preventDefault();
 
-        this.operateDrag(event.offsetX, event.offsetY, event.movementX, event.movementY);
+        this.operateDrag(
+            event.offsetX,
+            event.offsetY,
+            event.movementX,
+            event.movementY
+        );
     }
 
     public init(): void {
@@ -200,7 +219,12 @@ export class MouseControl extends Control {
 export class TouchControl extends Control {
     private lastPos: Vector2 | undefined;
 
-    constructor(camera: PerspectiveCamera, scene: Scene, renderer: WebGLRenderer, cube: Cube) {
+    constructor(
+        camera: PerspectiveCamera,
+        scene: Scene,
+        renderer: WebGLRenderer,
+        cube: Cube
+    ) {
         super(camera, scene, renderer, cube);
 
         this.touchStart = this.touchStart.bind(this);
@@ -226,7 +250,12 @@ export class TouchControl extends Control {
         const touches = event.touches;
         if (touches.length === 1 && this.lastPos) {
             const touch = touches[0];
-            this.operateDrag(touch.pageX, touch.pageY, touch.pageX - this.lastPos.x, touch.pageY - this.lastPos.y);
+            this.operateDrag(
+                touch.pageX,
+                touch.pageY,
+                touch.pageX - this.lastPos.x,
+                touch.pageY - this.lastPos.y
+            );
             this.lastPos = new Vector2(touch.pageX, touch.pageY);
         }
     }

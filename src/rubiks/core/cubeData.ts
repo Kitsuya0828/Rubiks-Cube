@@ -1,4 +1,4 @@
-import {Vector3} from "three";
+import { Vector3 } from "three";
 
 type ColorRepresentation = string | number;
 
@@ -9,7 +9,14 @@ export interface CubeElement {
     withLogo?: boolean;
 }
 
-type CubeColor = [ColorRepresentation, ColorRepresentation, ColorRepresentation, ColorRepresentation, ColorRepresentation, ColorRepresentation];
+type CubeColor = [
+    ColorRepresentation,
+    ColorRepresentation,
+    ColorRepresentation,
+    ColorRepresentation,
+    ColorRepresentation,
+    ColorRepresentation
+];
 
 class CubeData {
     /**
@@ -25,15 +32,25 @@ class CubeData {
         return this._size;
     }
     public elements: CubeElement[] = [];
-    public constructor(cubeOrder = 3, colors: CubeColor = ["#fb3636", "#ff9351", "#fade70", "#9de16f", "#51acfa", "#da6dfa"]) {
+    public constructor(
+        cubeOrder = 3,
+        colors: CubeColor = [
+            "#fb3636",
+            "#ff9351",
+            "#fade70",
+            "#9de16f",
+            "#51acfa",
+            "#da6dfa",
+        ]
+    ) {
         this.cubeOrder = cubeOrder;
         this.colors = colors;
         this.initElements();
-    };
+    }
 
     /**
      * 初始化数据
-     * @param localDataFirst 是否从 localStorage 读取数据 
+     * @param localDataFirst 是否从 localStorage 读取数据
      */
     private initElements(localDataFirst = true) {
         if (localDataFirst && localStorage) {
@@ -60,13 +77,13 @@ class CubeData {
                 this.elements.push({
                     color: this.colors[0],
                     pos: new Vector3(x, border + this._size * 0.5, z),
-                    normal: new Vector3(0, 1, 0)
+                    normal: new Vector3(0, 1, 0),
                 });
 
                 this.elements.push({
                     color: this.colors[1],
                     pos: new Vector3(x, -border - this._size * 0.5, z),
-                    normal: new Vector3(0, -1, 0)
+                    normal: new Vector3(0, -1, 0),
                 });
             }
         }
@@ -83,7 +100,7 @@ class CubeData {
                 this.elements.push({
                     color: this.colors[3],
                     pos: new Vector3(border + this._size * 0.5, y, z),
-                    normal: new Vector3(1, 0, 0)
+                    normal: new Vector3(1, 0, 0),
                 });
             }
         }
@@ -96,13 +113,13 @@ class CubeData {
                     pos: new Vector3(x, y, border + this._size * 0.5),
                     normal: new Vector3(0, 0, 1),
                     // withLogo: x === 0 && y === 0
-                    withLogo: false
+                    withLogo: false,
                 });
 
                 this.elements.push({
                     color: this.colors[5],
                     pos: new Vector3(x, y, -border - this._size * 0.5),
-                    normal: new Vector3(0, 0, -1)
+                    normal: new Vector3(0, 0, -1),
                 });
             }
         }
@@ -123,7 +140,7 @@ class CubeData {
 
     /**
      * 从 localStorage 读取数据
-     * @returns 
+     * @returns
      */
     public getLocalData() {
         if (localStorage) {
@@ -132,12 +149,16 @@ class CubeData {
             if (data) {
                 const parseData: {
                     color: ColorRepresentation;
-                    pos: {x: number; y: number; z: number},
-                    normal: {x: number; y: number; z: number}
+                    pos: { x: number; y: number; z: number };
+                    normal: { x: number; y: number; z: number };
                 }[] = JSON.parse(data);
 
                 parseData.forEach((item) => {
-                    item.normal = new Vector3(item.normal.x, item.normal.y, item.normal.z);
+                    item.normal = new Vector3(
+                        item.normal.x,
+                        item.normal.y,
+                        item.normal.z
+                    );
                     item.pos = new Vector3(item.pos.x, item.pos.y, item.pos.z);
                 });
 

@@ -1,11 +1,15 @@
-import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
+import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import createCamera from "./components/camera";
 import createScene from "./components/scene";
 import createRenderer from "./components/renderer";
-import {Cube} from "./core/cube";
-import Control, {MouseControl, TouchControl} from "./core/control";
+import { Cube } from "./core/cube";
+import Control, { MouseControl, TouchControl } from "./core/control";
 
-const setSize = (container: Element, camera: PerspectiveCamera, renderer: WebGLRenderer) => {
+const setSize = (
+    container: Element,
+    camera: PerspectiveCamera,
+    renderer: WebGLRenderer
+) => {
     // Set the camera's aspect ratio
     camera.aspect = container.clientWidth / container.clientHeight;
     camera.updateProjectionMatrix();
@@ -53,9 +57,15 @@ class Rubiks {
 
         const winW = this.renderer.domElement.clientWidth;
         const winH = this.renderer.domElement.clientHeight;
-        const coarseSize = cube.getCoarseCubeSize(this.camera, {w: winW, h: winH});
+        const coarseSize = cube.getCoarseCubeSize(this.camera, {
+            w: winW,
+            h: winH,
+        });
 
-        const ratio = Math.max(2.2 / (winW / coarseSize), 2.2 / (winH / coarseSize));
+        const ratio = Math.max(
+            2.2 / (winW / coarseSize),
+            2.2 / (winH / coarseSize)
+        );
         this.camera.position.z *= ratio;
         this._controls.push(
             new MouseControl(this.camera, this.scene, this.renderer, cube),
@@ -70,7 +80,6 @@ class Rubiks {
      */
     public disorder() {
         if (this.cube) {
-
         }
     }
 

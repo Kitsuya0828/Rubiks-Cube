@@ -2,44 +2,46 @@ import React from "react";
 import Rubiks from "./rubiks/index";
 
 window.onload = () => {
-  const container = document.getElementById("container");
-  const orderChangeEle = document.getElementById(
-      "order-select"
-  ) as HTMLSelectElement;
-  const disorderEle = document.getElementById(
-      "disorder"
-  ) as HTMLButtonElement;
-  const restore = document.getElementById("restore") as HTMLButtonElement;
+    const container = document.getElementById("container");
+    const orderChangeEle = document.getElementById(
+        "order-select"
+    ) as HTMLSelectElement;
+    const disorderEle = document.getElementById(
+        "disorder"
+    ) as HTMLButtonElement;
+    const restore = document.getElementById("restore") as HTMLButtonElement;
 
-  if (container) {
-      const rubiks = new Rubiks(container);
+    if (container) {
+        const rubiks = new Rubiks(container);
 
-      orderChangeEle.addEventListener("change", (event) => {
-          const value = (event.target! as HTMLSelectElement).value;
+        orderChangeEle.addEventListener("change", (event) => {
+            const value = (event.target! as HTMLSelectElement).value;
 
-          rubiks.setOrder(parseInt(value));
-      });
+            rubiks.setOrder(parseInt(value));
+        });
 
-      disorderEle.addEventListener("click", () => {
-          rubiks.disorder();
-      });
+        disorderEle.addEventListener("click", () => {
+            rubiks.disorder();
+        });
 
-      restore.addEventListener("click", () => {
-          const ok = window.confirm("Are you sure?");
+        restore.addEventListener("click", () => {
+            const ok = window.confirm("Are you sure?");
 
-          if (ok) {
-              rubiks.restore();
-          }
-      });
-  }
+            if (ok) {
+                rubiks.restore();
+            }
+        });
+    }
 };
-
 
 function App() {
     return (
         <>
-            <div id="container" style={{"position": "relative", "width": "100%", "height": "100vh"}}>
-                <div id="status" style={{"position":"absolute"}}>
+            <div
+                id="container"
+                style={{ position: "relative", width: "100%", height: "100vh" }}
+            >
+                <div id="status" style={{ position: "absolute" }}>
                     <h1>Rubik's Cube</h1>
                     <div className="status-item">
                         <div className="status-item">

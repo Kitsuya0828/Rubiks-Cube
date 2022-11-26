@@ -1,8 +1,8 @@
-import {WebGLRenderer} from "three";
+import { WebGLRenderer } from "three";
 
 const createRenderer = () => {
-    const renderer = new WebGLRenderer({antialias: true});
-    
+    const renderer = new WebGLRenderer({ antialias: true });
+
     return renderer;
 };
 
